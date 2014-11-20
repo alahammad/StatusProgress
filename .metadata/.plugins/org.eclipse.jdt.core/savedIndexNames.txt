@@ -1,3 +1,2 @@
 INDEX VERSION 1.126+/Users/ala/Documents/StatusBarProgressBar/.metadata/.plugins/org.eclipse.jdt.core
-2764178376.index
 4146229811.index
