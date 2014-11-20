@@ -1,0 +1,80 @@
+package net.ahammad.statusprogressbar;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.view.WindowManager;
+
+
+public class MainActivity extends Activity {
+	
+	private int progressBarStatus;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    
+
+	private void hideStatusBar() {
+		mProgressBar2.setVisibility(View.VISIBLE);
+		 progress() ;
+		WindowManager.LayoutParams attrs = getWindow().getAttributes();
+		attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		getWindow().setAttributes(attrs);
+	}
+
+	private void showStatusBar() {
+		mProgressBar2.setVisibility(View.GONE);
+		WindowManager.LayoutParams attrs = getWindow().getAttributes();
+		attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		getWindow().setAttributes(attrs);
+	}
+
+	private void progress() {
+
+		new Thread(new Runnable() {
+			public void run() {
+				while (progressBarStatus < 100) {
+					progressBarStatus =progressBarStatus+ 3;
+					// Update the progress bar and display the
+					// current value in the text view
+					progressBarHandler.post(new Runnable() {
+						public void run() {
+							mProgressBar2.setProgress(progressBarStatus);
+						}
+					});
+					try {
+						// Sleep for 200 milliseconds.
+						// Just to display the progress slowly
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						showStatusBar();	
+					}
+				});
+			}
+		}).start();
+	}
+
+
+    
+}

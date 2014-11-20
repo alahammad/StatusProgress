@@ -1,0 +1,150 @@
+package net.ahammad.modernartui;
+
+import android.app.Activity;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+
+public class MainActivity extends Activity {
+
+	private SeekBar mProgressBar;
+	private ImageView mImageView1, mImageView2, mImageView3, mImageView4,
+			mImageView5;
+	private ProgressBar mProgressBar2;
+
+	private Handler progressBarHandler = new Handler();
+	int progressBarStatus = 0;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		mProgressBar = (SeekBar) findViewById(R.id.seekBar1);
+		mImageView1 = (ImageView) findViewById(R.id.imageView1);
+		mImageView2 = (ImageView) findViewById(R.id.imageView2);
+		mImageView3 = (ImageView) findViewById(R.id.imageView3);
+		mImageView4 = (ImageView) findViewById(R.id.imageView4);
+		mImageView5 = (ImageView) findViewById(R.id.imageView5);
+		mProgressBar2 = (ProgressBar) findViewById(R.id.progressBar1);
+		Drawable customDrawable= getResources().getDrawable(R.drawable.custom_progress);
+		mProgressBar2.setProgressDrawable(customDrawable);
+		
+		mProgressBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// / image 1
+				// int seekR = 158 + seekBar.getProgress();
+				// int seekG = 181 + seekBar.getProgress();
+				// int seekB = 90 + seekBar.getProgress();
+				//
+				// mImageView1.setBackgroundColor(0xff000000 + seekR * 0x10000
+				// + seekG * 0x100 + seekB);
+				//
+				// // image 2
+				// seekR = 212 + seekBar.getProgress();
+				// seekG = 42 + seekBar.getProgress();
+				// seekB = 83 + seekBar.getProgress()
+				// ;
+				// mImageView2.setBackgroundColor(0xff000000 + seekR * 0x10000
+				// + seekG * 0x100 + seekB);
+
+				int seekR = seekBar.getProgress() * -1;
+				int seekG = seekBar.getProgress() * -1;
+				int seekB = seekBar.getProgress() * -1;
+				// mImageView1.setBackgroundColor(0xff9EB5E6 + seekR * 0x10000);
+				// mImageView2
+				// .setBackgroundColor(0xffD42AC8 + (seekR - 70) * 0x10000);
+				//
+				// mImageView3
+				// .setBackgroundColor(0xffB30E0E + (seekG-30 )* 0x100);
+				// mImageView4
+				// .setBackgroundColor(0xffE3E3E3 + (seekR));
+				// mImageView5
+				// .setBackgroundColor(0xff0841BD + (seekG * 0x100));
+
+				mImageView1.setBackgroundColor(0xff9EB5E6 + seekR * 0x10000
+						+ seekB);
+				mImageView2.setBackgroundColor(0xffD42AC8
+
+				+ seekB);
+				mImageView3.setBackgroundColor(0xffB30E0E + seekR * 0x10000
+						+ seekG * 0x100);
+				mImageView4.setBackgroundColor(0xffE3E3E3 + seekG * 0x100
+						+ seekB);
+				mImageView5.setBackgroundColor(0xff0841BD + seekR * 0x10000
+						+ seekB);
+			}
+		});
+		hideStatusBar();
+
+	}
+
+	private void hideStatusBar() {
+		mProgressBar2.setVisibility(View.VISIBLE);
+		 progress() ;
+		WindowManager.LayoutParams attrs = getWindow().getAttributes();
+		attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		getWindow().setAttributes(attrs);
+	}
+
+	private void showStatusBar() {
+		mProgressBar2.setVisibility(View.GONE);
+		WindowManager.LayoutParams attrs = getWindow().getAttributes();
+		attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		getWindow().setAttributes(attrs);
+	}
+
+	private void progress() {
+
+		new Thread(new Runnable() {
+			public void run() {
+				while (progressBarStatus < 100) {
+					progressBarStatus =progressBarStatus+ 3;
+					// Update the progress bar and display the
+					// current value in the text view
+					progressBarHandler.post(new Runnable() {
+						public void run() {
+							mProgressBar2.setProgress(progressBarStatus);
+						}
+					});
+					try {
+						// Sleep for 200 milliseconds.
+						// Just to display the progress slowly
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						showStatusBar();	
+					}
+				});
+			}
+		}).start();
+	}
+
+}
